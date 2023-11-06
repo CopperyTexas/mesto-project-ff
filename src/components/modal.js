@@ -1,12 +1,6 @@
 // Функция открытия popup
 const openModal = function(element) {
-	// Задаем плавную анимацию открытия окна
-	element.classList.add("popup_is-animated");
-	setTimeout(() =>{
-		element.classList.add('popup_is-opened');
-		element.classList.add("popup_is-animated");
-	},
-	0);
+	element.classList.add('popup_is-opened');
 	// по Esc можно выйти из popup
 	document.addEventListener("keydown", closeModalKeyEsc);
 };
@@ -23,8 +17,8 @@ const closeModalClickOut = function(evt) {
 };
 // Функция закрытия popup по клику Esc
 const closeModalKeyEsc = function(evt) {
-	const thisModal = document.querySelector(".popup_is-opened");
 	if (evt.key === "Escape") {
+		const thisModal = document.querySelector(".popup_is-opened");
 		closeModal(thisModal);
 	}
 };

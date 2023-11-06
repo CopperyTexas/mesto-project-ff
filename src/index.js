@@ -6,12 +6,12 @@ import {openModal,closeModal,closeModalClickOut} from "./components/modal.js";
 
 // ----------------------------- Const ----------------------------------
 
-const popupEdit = document.querySelector('.popup_type_edit');
+const popupEditProfile = document.querySelector('.popup_type_edit');
 const cardList = document.querySelector('.places__list');
 
 const editProfileButton = document.querySelector('.profile__edit-button');
 const addCardButton = document.querySelector('.profile__add-button');
-const popupClose = document.querySelectorAll('.popup__close');
+const buttonsClosePopup = document.querySelectorAll('.popup__close');
 
 const popupEditForm = document.forms['edit-profile'];
 const popupNewCardForm = document.forms['new-place'];
@@ -27,7 +27,7 @@ const captionCard = popupImageCard.querySelector('.popup__caption');
 
 // Функция добавления карточки в список
 function renderCard(info, list){
-    list.prepend(createCard(info, deleteCard ,likeCard, openPopup));
+    list.prepend(createCard(info, deleteCard ,likeCard, openImagePopup));
 }
 
 // Функция добавления новой карточки
@@ -57,30 +57,30 @@ initialCards.forEach((el) =>{
 // Открытие popup профиля по кнопке
 editProfileButton.addEventListener("click", () => {
     // Заполнили popup данными
-    popupCompleteEdit(popupEditForm, nameInput.textContent, jobInput.textContent);
+    fillInEditProfilePopupInputs(popupEditForm, nameInput.textContent, jobInput.textContent);
     // Только потом открыли popup
-    openModal(popupEdit);
+    openModal(popupEditProfile);
    });
 
 // Заполнение popup профиля уже имеющимися данными
- const popupCompleteEdit = function (form, inputName, inputJob) {
+ const fillInEditProfilePopupInputs = function (form, inputName, inputJob) {
      form.elements.name.value = inputName;
      form.elements.description.value = inputJob;
    };
 
 // Функция сохранения введенных данных
- function handleFormSubmit(evt) {
+ function submitEditProfileForm(evt) {
     // Отменяем поведение браузера по умолчанию
      evt.preventDefault();
     // Вводим данные от пользователя
      nameInput.textContent = popupEditForm.name.value;
      jobInput.textContent = popupEditForm.description.value;
     // Закрываем окно после добавления
-     closeModal(popupEdit);
+     closeModal(popupEditProfile);
       }
 
  // Сохранение данных профиля
- popupEditForm.addEventListener("submit", handleFormSubmit);
+ popupEditForm.addEventListener("submit", submitEditProfileForm);
 
 // Открытие popup дополнения новой карточки
 addCardButton.addEventListener('click', () => {
@@ -91,7 +91,7 @@ addCardButton.addEventListener('click', () => {
 });
 
 // Функция открытия popup карточки
-function openPopup(evt){
+function openImagePopup(evt){
   imageCard.src = evt.target.src;
   captionCard.textContent = evt.target.alt.slice(15);// Используем slice() для того чтобы убрать "На изображении"
   imageCard.alt = evt.target.alt;
@@ -108,7 +108,7 @@ function closePopupWindow(evt){
     closeModal(windowPopup);
 }
 // Закрываем нажатием на крестик
-popupClose.forEach((element)=> {
+buttonsClosePopup.forEach((element)=> {
     element.addEventListener('click', closePopupWindow);
 });
 
@@ -116,7 +116,7 @@ popupClose.forEach((element)=> {
 popupNewCard.addEventListener("click", (evt) => {
   closeModalClickOut(evt);
 });
-popupEdit.addEventListener("click", (evt) => {
+popupEditProfile.addEventListener("click", (evt) => {
   closeModalClickOut(evt);
 });
 popupImageCard.addEventListener("click", (evt) => {
