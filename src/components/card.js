@@ -30,13 +30,11 @@ function createCard(cardInfo, deleteFunction, likeFunction, openPopup, myId) {
   cardImage.alt = `На изображении ${cardInfo.name}`;
   cardLikeCount.textContent = cardInfo.likes.length;
 
-  cardImage.addEventListener("click", () =>
-    openPopup(cardImage.src, cardImage.alt)
-  );
+  cardImage.addEventListener("click", openPopup);
 
   // Если карточка не моя, кнопка удаления не отображается
   if (cardInfo.owner["_id"] != myId) {
-    cardDeleteButton.classList.add("card__delete-button-visible");
+    cardDeleteButton.style.display = "none";
   } else {
     //	Иначе вешаем слушатель на кнопку
     cardDeleteButton.addEventListener("click", () => {
