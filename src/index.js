@@ -87,7 +87,7 @@ function downloadNewCard(evt) {
   addNewCard(newCardData.name, newCardData.link)
     .then((info) => {
       cardList.prepend(
-        createCard(info, deleteFunction, controlLikeCard, openImagePopup)
+        createCard(info, deleteFunction, controlLikeCard, openImagePopup, myId)
       );
       // Закрываем окно после добавления
       closeModal(popupNewCard);
@@ -178,29 +178,31 @@ function updateFormAvatar(evt) {
 // Вешаем слушатель на форму
 popupAvatarEditForm.addEventListener("submit", updateFormAvatar);
 
-// Функция загрузки данных профиля на страницу с сервера
-getProfileInfo()
-  .then((info) => {
-    myId = info["_id"];
-    nameInput.textContent = info.name;
-    jobInput.textContent = info.about;
-    profileAvatar.style.backgroundImage = `url('${info.avatar}')`;
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-
-// Функция загрузки списка карточек
-getInitialCards()
-  .then((info) => {
-    // Вывод карточек с сервера на страницу
-    info.forEach((el) => {
-      renderCard(el, cardList);
+Promise.all([getProfileInfo(), getInitialCards()]).then(() => {
+  // Функция загрузки данных профиля на страницу с сервера
+  getProfileInfo()
+    .then((info) => {
+      myId = info["_id"];
+      nameInput.textContent = info.name;
+      jobInput.textContent = info.about;
+      profileAvatar.style.backgroundImage = `url('${info.avatar}')`;
+    })
+    .catch((error) => {
+      console.log(error);
     });
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+
+  // Функция загрузки списка карточек
+  getInitialCards()
+    .then((info) => {
+      // Вывод карточек с сервера на страницу
+      info.forEach((el) => {
+        renderCard(el, cardList);
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
 
 //--------------------------- Открытие Popup -------------------------
 
@@ -245,10 +247,10 @@ addCardButton.addEventListener("click", () => {
 });
 
 // Функция открытия popup карточки
-function openImagePopup(evt) {
-  imageCard.src = evt.target.src;
-  captionCard.textContent = evt.target.alt.slice(15); // Используем slice() для того чтобы убрать "На изображении"
-  imageCard.alt = evt.target.alt;
+function openImagePopup(imageUrl, imageAlt) {
+  imageCard.src = imageUrl;
+  captionCard.textContent = imageAlt.slice(15); // Используем slice() для того чтобы убрать "На изображении"
+  imageCard.alt = imageAlt;
   openModal(popupImageCard);
 }
 
@@ -281,6 +283,9 @@ popupEditProfile.addEventListener("click", (evt) => {
   closeModalClickOut(evt);
 });
 popupImageCard.addEventListener("click", (evt) => {
+  closeModalClickOut(evt);
+});
+popupDeleteCard.addEventListener("click", (evt) => {
   closeModalClickOut(evt);
 });
 //----------------------------------- Включаем валидацию ---------------------------ы
