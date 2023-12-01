@@ -178,31 +178,21 @@ function updateFormAvatar(evt) {
 // Вешаем слушатель на форму
 popupAvatarEditForm.addEventListener("submit", updateFormAvatar);
 
-Promise.all([getProfileInfo(), getInitialCards()]).then(() => {
-  // Функция загрузки данных профиля на страницу с сервера
-  getProfileInfo()
-    .then((info) => {
-      myId = info["_id"];
-      nameInput.textContent = info.name;
-      jobInput.textContent = info.about;
-      profileAvatar.style.backgroundImage = `url('${info.avatar}')`;
-    })
-    .catch((error) => {
-      console.log(error);
+// Используем Promise чтобы сначала получить информацию от сервера, и только после рендерить на страницу
+Promise.all([getProfileInfo(), getInitialCards()])
+  .then(([info, initialCards]) => {
+    myId = info["_id"];
+    nameInput.textContent = info.name;
+    jobInput.textContent = info.about;
+    profileAvatar.style.backgroundImage = `url('${info.avatar}')`;
+    // Функция загрузки списка карточек
+    initialCards.forEach((el) => {
+      renderCard(el, cardList);
     });
-
-  // Функция загрузки списка карточек
-  getInitialCards()
-    .then((info) => {
-      // Вывод карточек с сервера на страницу
-      info.forEach((el) => {
-        renderCard(el, cardList);
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-});
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 
 //--------------------------- Открытие Popup -------------------------
 
